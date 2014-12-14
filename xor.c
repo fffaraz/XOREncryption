@@ -7,7 +7,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define BUFFERSIZE (64 * 1024)
+#define KEYSIZE (1024)
+#define BUFSIZE (64 * 1024)
 
 void usage(char **argv)
 {
@@ -19,23 +20,32 @@ int main(int argc, char **argv)
 {
     if(argc < 2) usage(argv);
 
-    char *key = argv[1];
-    int keylen = strlen(key);
+    char *keyw = argv[1];
+    int keylen = strlen(keyw);
+    if(keylen > KEYSIZE) return 2;
+
+    char key[KEYSIZE];
+    for(int i = 0; i < KEYSIZE; i++)
+        key[i] = keyw[i % keylen];
 
     int inp = argc > 2 ? open(argv[2], O_RDONLY) : STDIN_FILENO;
-    if(inp < 0) return 2;
-
-    int out = argc > 3 ? open(argv[3], O_WRONLY | O_CREAT, S_IREAD | S_IWRITE) : STDOUT_FILENO;
     if(inp < 0) return 3;
 
-    char *buf = malloc(BUFFERSIZE);
-    if(buf == NULL) return 4;
+    int out = argc > 3 ? open(argv[3], O_WRONLY | O_CREAT, S_IREAD | S_IWRITE) : STDOUT_FILENO;
+    if(inp < 0) return 4;
+
+    char *buf = malloc(BUFSIZE);
+    if(buf == NULL) return 5;
 
     ssize_t size;
-    while((size = read(inp, buf, BUFFERSIZE)) > 0)
+    while((size = read(inp, buf, BUFSIZE)) > 0)
     {
-        for(ssize_t i=0; i<size; ++i)
-            buf[i] ^= key[i % keylen];
+        for(int i = 0; i < size; i += KEYSIZE)
+        {
+            char *p = &buf[i];
+            for(int j = 0; j < KEYSIZE; j++)
+                p[j] ^= key[j];
+        }
         write(out, buf, size);
     }
 
