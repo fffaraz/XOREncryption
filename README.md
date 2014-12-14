@@ -1,4 +1,4 @@
 XOREncryption
 =============
 
-Simple XOR File Encryption/Decryption in C++
+Simple & Fast XOR File Encryption and Decryption in C on Linux
