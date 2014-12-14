@@ -43,8 +43,17 @@ int main(int argc, char **argv)
         for(int i = 0; i < size; i += KEYSIZE)
         {
             char *p = &buf[i];
-            for(int j = 0; j < KEYSIZE; j++)
-                p[j] ^= key[j];
+            for(int j = 0; j < KEYSIZE; j += 8)
+            {
+                p[j + 0] ^= key[j + 0];
+                p[j + 1] ^= key[j + 1];
+                p[j + 2] ^= key[j + 2];
+                p[j + 3] ^= key[j + 3];
+                p[j + 4] ^= key[j + 4];
+                p[j + 5] ^= key[j + 5];
+                p[j + 6] ^= key[j + 6];
+                p[j + 7] ^= key[j + 7];
+            }
         }
         write(out, buf, size);
     }
