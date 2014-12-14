@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
+
+#define _LARGEFILE64_SOURCE
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <fcntl.h>
 
 #define BUFFERSIZE (64 * 1024)
@@ -39,6 +41,7 @@ int main(int argc, char **argv)
         write(out, buf, size);
     }
 
+    free(buf);
     close(inp);
     close(out);
     return 0;
