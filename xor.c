@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define _LARGEFILE64_SOURCE
-
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -13,8 +11,8 @@
 
 void usage(char **argv)
 {
-    printf("Usage: %s KEY [INPUT] [OUTPUT]\n", argv[0]);
-    exit(1);
+    fprintf(stderr, "Usage: %s KEY [INPUT] [OUTPUT]\n", argv[0]);
+    exit(EXIT_FAILURE);
 }
 
 int main(int argc, char **argv)
@@ -46,4 +44,3 @@ int main(int argc, char **argv)
     close(out);
     return 0;
 }
-
