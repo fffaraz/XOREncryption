@@ -18,12 +18,19 @@ void usage(char **argv)
 int main(int argc, char **argv)
 {
     if(argc < 2) usage(argv);
+
     char *key = argv[1];
     int keylen = strlen(key);
+
     int inp = argc > 2 ? open(argv[2], O_RDONLY) : STDIN_FILENO;
-    int out = argc > 3 ? open(argv[3], O_WRONLY | O_CREAT) : STDOUT_FILENO;
+    if(inp < 0) return 2;
+
+    int out = argc > 3 ? open(argv[3], O_WRONLY | O_CREAT, S_IREAD | S_IWRITE) : STDOUT_FILENO;
+    if(inp < 0) return 3;
+
     char *buf = malloc(BUFFERSIZE);
-    if(buf == NULL) return 2;
+    if(buf == NULL) return 4;
+
     ssize_t size;
     while((size = read(inp, buf, BUFFERSIZE)) > 0)
     {
@@ -31,6 +38,7 @@ int main(int argc, char **argv)
             buf[i] ^= key[i % keylen];
         write(out, buf, size);
     }
+
     close(inp);
     close(out);
     return 0;
