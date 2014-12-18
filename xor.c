@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     if(inp < 0) return 3;
 
     int out = argc > 3 ? open(argv[3], O_WRONLY | O_CREAT, S_IREAD | S_IWRITE) : STDOUT_FILENO;
-    if(inp < 0) return 4;
+    if(out < 0) return 4;
 
     char *buf = malloc(BUFSIZE);
     if(buf == NULL) return 5;
